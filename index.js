@@ -88,7 +88,7 @@ define(function(require, exports, module) {
 
 		for (var i = hints.length - 1, sibling; i >= 0; i--) {
 			sibling = siblings[--ix];
-			if (!sibling || last(sibling.path.components).name !== hints[i].name) {
+			if (!sibling || nodeName(sibling) !== hints[i].name) {
 				return false;
 			}
 		}
@@ -112,7 +112,7 @@ define(function(require, exports, module) {
 
 		for (var i = 0, il = hints.length, sibling; i < il; i++) {
 			sibling = siblings[++ix];
-			if (!sibling || last(sibling.path.components).name !== hints[i].name) {
+			if (!sibling || nodeName(sibling) !== hints[i].name) {
 				return false;
 			}
 		}
