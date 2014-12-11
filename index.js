@@ -120,6 +120,27 @@ define(function(require, exports, module) {
 		return true;
 	}
 
+	function matchingSet(items, hints) {
+		var result = [];
+		if (!hints || !hints.length) {
+			return result;
+		}
+
+		var hl = hints.length;
+		items.forEach(function(item, i) {
+			if (hints[0].name === nodeName(item)) {
+				for (var j = 1; j < hl; j++) {
+					if (!items[i + j] || nodeName(items[i +j]) !== hints[j].name) {
+						return false;
+					}
+				}
+				result.push(i);
+			}
+		});
+
+		return result;
+	};
+
 	return {
 		/**
 		 * Tries to find the best insertion point for absent
@@ -187,44 +208,24 @@ define(function(require, exports, module) {
 				return parent.children.length;
 			}
 
-			var before = last(hint.before);
-			var after = hint.after[0];
+			var before = matchingSet(items, hint.before).map(function(ix) {
+				return ix + hint.before.length;
+			});
+			var after = matchingSet(items, hint.after);
 			var possibleResults = [];
-
-			if (before && after) {
+			if (hint.before.length && hint.after.length) {
 				// we have both sets of hints, find index between them
-				for (var i = items.length - 1; i >= 0; i--) {
-					if (before.name === nodeName(items[i]) && after.name === nodeName(items[i + 1])) {
-						if (matchesBeforeHints(items[i + 1], hint.before) && matchesAfterHints(items[i], hint.after)) {
-							return i + 1;
+				before.forEach(function(ix) {
+					for (var i = 0, il = after.length; i < il; i++) {
+						if (after[i] >= ix) {
+							return possibleResults.push(after[i]);
 						}
-						possibleResults.push(i + 1);
 					}
-				}
-			} else if (before) {
-				// we have "before" set only, return index right after
-				// last component
-				var restBefore = hint.before.slice(0, -1);
-				for (var i = items.length - 1; i >= 0; i--) {
-					if (before.name === nodeName(items[i])) {
-						if (matchesBeforeHints(items[i], restBefore)) {
-							return i + 1;
-						}
-						possibleResults.push(i + 1);
-					}
-				}
-			} else if (after) {
-				// we have "after" set only, return index right before
-				// first component
-				var restAfter = hint.after.slice(1);
-				for (var i = items.length - 1; i >= 0; i--) {
-					if (after.name === nodeName(items[i])) {
-						if (matchesAfterHints(items[i], restAfter)) {
-							return i;
-						}
-						possibleResults.push(i);
-					}
-				}
+				});
+			} else if (hint.before.length) {
+				possibleResults = before;
+			} else if (hint.after.length) {
+				possibleResults = after;
 			}
 
 			// insert nodes at the end by default

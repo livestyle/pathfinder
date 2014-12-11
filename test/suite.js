@@ -84,4 +84,20 @@ describe('Path finder', function() {
 		assert.equal(findPath(tree2, ctx.path, hints), 'a|2/c|1');
 		assert.equal(findPath(tree3, ctx.path, hints), 'a|1/c|1');
 	});
+
+	it('sparse hint match', function() {
+		var tree1 = parse('a{} b{} c{} d{} e{}');
+		var tree2 = parse('a{} b{} c1{} c2{} c3{} d{} e{}');
+		var tree3 = parse('d{} e{} a{} b{} c1{} c2{} c3{} d{} e{} a{} b{}');
+		var ctx, hint, result;
+
+		ctx = tree1.get('a').get('c');
+		hint = {
+			before: [comp('a'), comp('b')],
+			after:  [comp('d'), comp('e')]
+		};
+
+		assert.equal(pathfinder.indexForHint(tree2, hint), 5);
+		assert.equal(pathfinder.indexForHint(tree3, hint), 7);
+	});
 });
