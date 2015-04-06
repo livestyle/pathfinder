@@ -208,6 +208,8 @@ define(function(require, exports, module) {
 				return parent.children.length;
 			}
 
+			// XXX matchingSet() returns staring index of matching subset
+			// but for our purposes we actually need the ending index
 			var before = matchingSet(items, hint.before).map(function(ix) {
 				return ix + hint.before.length;
 			});
