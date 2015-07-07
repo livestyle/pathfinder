@@ -10,6 +10,6 @@
   "license": "MIT",
   "devDependencies": {
     "emmet-livestyle": "^0.9.3",
-    "mocha": "^2.0.1"
+    "mocha": "^2.2.5"
   }
 }
