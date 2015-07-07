@@ -8,7 +8,7 @@
  * @param  {Object} hints
  * @return {Object} Object with `parent` and `index` properties
  * pointing to matched element. The `rest` property (if present)
- * means given path can’t be fully matched and `index` propery
+ * means given path can’t be fully matched and `index` property
  * points to `parent` child index where the `rest` node path
  * components should be added
  */
